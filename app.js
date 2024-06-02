@@ -1,5 +1,8 @@
+require('dotenv').config()
 const dbConnection = require('./model/dbConfig')
 const express = require('express');
+const cors = require('cors')
+
 
 
 const app = express();
@@ -9,6 +12,8 @@ const port = 5500;
 //userRoute middleware file
 const userRoutes = require('./route/userRoute');
 
+//cross origin resource sharing
+app.use(cors())
 
 //json middlware
 app.use(express.json())

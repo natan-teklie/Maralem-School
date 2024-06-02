@@ -62,7 +62,7 @@ async function Login (req, res){
       //token generation
       const username = user[0].username;
       const userid = user[0].userid;
-      const token = await jwt.sign({username, userid}, 'secret', {expiresIn:'1d'});
+      const token = await jwt.sign({username, userid}, process.env.JWT_SECRET , {expiresIn:'1d'});
       return res.status(StatusCodes.OK).json({msg:"successfully login", token, username})
     } catch (error) {
         // return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({msg:"something went wrong please try again"})
@@ -71,8 +71,11 @@ async function Login (req, res){
 }
 
 
-function Check(req,res){
-    res.send('Hi there.This is check route')
+async function Check(req,res){
+    const username = req.user.username;
+    const userid = req.user.userid;
+    return res.status(StatusCodes.OK).json({msg:"autherized user", username, userid})
+
 }
 
 module.exports = {Register, Login, Check}
