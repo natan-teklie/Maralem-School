@@ -32,6 +32,7 @@ async function Register (req, res) {
     return res.status(StatusCodes.CREATED).json({msg:"user created"})
   } catch (error) { 
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({msg:"something went wrong please try again later"})
+    // return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error:error})
   }
 
 }
@@ -46,21 +47,26 @@ async function Login (req, res){
     }
     try {
         const [user] = await dbConnection.query("select userid, username, password from users where email = ?",[email] )
+        //if I want to look what user looks like I can 
+        // return res.json({user:user})
         if(user.length ==0){
             console.log(user)
             return res.status(StatusCodes.BAD_REQUEST).json({msg:"invalid credential"})
         }
-        //compare password
-      const isMatch =  await bcrypt.compare(password, user.password)
+        //check password by comparing given password
+      const isMatch =  await bcrypt.compare(password, user[0].password)
       if(!isMatch){
         return res.status(StatusCodes.BAD_REQUEST).json({msg:"invalid request"})
-      }else{
-        return res.status(StatusCodes.OK).json({msg:"successfully login"})
       }
       
       //token generation
+      const username = user[0].username;
+      const userid = user[0].userid;
+      const token = await jwt.sign({username, userid}, 'secret', {expiresIn:'1d'});
+      return res.status(StatusCodes.OK).json({msg:"successfully login", token, username})
     } catch (error) {
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({msg:"something went wrong please try again"})
+        // return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({msg:"something went wrong please try again"})
+        return res.json({error:error.message})
     }
 }
 

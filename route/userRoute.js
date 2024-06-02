@@ -1,7 +1,8 @@
 const express = require('express')
 const router = express.Router()
 
-
+//authentication midware file
+const authMidlware = require('../middlware/authMidlware')
 //controller file
 const {Register, Login, Check} = require('../controller/userController')
 
@@ -13,7 +14,7 @@ router.post('/login', Login)
 
 
 //Check route
-router.get('/check', Check)
+router.get('/check',authMidlware , Check)
 
 
 
