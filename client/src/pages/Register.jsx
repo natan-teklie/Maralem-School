@@ -1,7 +1,8 @@
+import './Register.css'
 import React from "react";
 import { useRef } from "react";
 import axios from "../axiosConfig";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Register = () => {
     const navigate = useNavigate()
@@ -35,14 +36,15 @@ try {
     navigate('/login')
 
 } catch (error) {
-    // alert(error)
+    alert(error?.response?.data?.msg)
+    console.log("error response:", error.response)
+    console.log("error response:", error.message)
 }
-       
 
     }
-
+    
   return (
-    <section>
+    <section className='register' >
       <form onSubmit={handleSubmit}>
         <div>
           <span>User:</span>
@@ -65,6 +67,7 @@ try {
           <input ref={passwordDemo} type="password"  placeholder="password"/>
         </div>
         <button type="submit">Register</button>
+        <p>Have an account already? <Link to={'/login'}>Login</Link></p>
       </form>
     </section>
   );
